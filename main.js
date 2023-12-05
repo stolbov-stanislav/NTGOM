@@ -1,34 +1,25 @@
 import { question } from 'readline-sync';
 
-import HashGenerator from './helpers/HashGenerator.js';
+import Rules from './helpers/Rules.js';
 import AI from './helpers/AI.js';
+import HashGenerator from './helpers/HashGenerator.js';
 
-const args = process.argv.slice(2);
+const rules = new Rules(process.argv.slice(2));
 
-const argsError = (args.length < 3) || (args.length % 2 === 0) || (args.length !== new Set(args).size);
-if (argsError) {
+const isArgsCorrected = rules.isOptionsCorrected();
+if (!isArgsCorrected) {
   // TODO: process hint output.
   console.log('You must pass 3 or more odd non-repeating arguments!');
 }
 
 const ai = new AI();
-ai.makeMove(args);
+ai.makeMove(rules.options);
+
+rules.drawMove = ai.move;
 
 const hashGenerator = new HashGenerator(ai.move);
 
-const userLoseMoves = [];
-const half = (args.length - 1) / 2;
-for (let shift = 1; shift <= half; shift++) {
-  userLoseMoves.push(args.at(ai.moveIndex - shift));
-}
-console.log('userLoseMoves', userLoseMoves);
-console.log('half', half);
-console.log('computerMoveIndex', ai.moveIndex);
-
-console.log('args', args);
-console.log('secret', hashGenerator.secret);
-console.log('computerMove', ai.move);
-console.log('hmac', hashGenerator.hmac);
+rules.collectLoseMoves(ai.moveIndex);
 
 function drawMenu(items) {
   items.forEach((item, i) => {
@@ -38,7 +29,7 @@ function drawMenu(items) {
   console.log('? - help');
 }
 
-drawMenu(args);
+drawMenu(rules.options);
 
 function askForMove() {
   return question('Enter your move: ');
@@ -48,6 +39,11 @@ const userMove = askForMove();
 
 console.log(`Your move: ${userMove}`);
 console.log(`Computer move: ${ai.move}`);
-console.log(`You ${userLoseMoves.includes(userMove) ? 'lose' : 'win'}.`);
+const decision = rules.isWin(userMove)
+  ? 'You win!'
+  : rules.isDraw(userMove)
+    ? 'Draw!'
+    : 'You lose.';
+console.log(decision);
 // TODO: process draw case!
 console.log(`HMAC secret: ${hashGenerator.secret}`);
