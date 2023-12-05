@@ -10,6 +10,9 @@ if (argsError) {
 
 const secret = randomBytes(256).toString('hex');
 
+const computerMove = args[Math.floor(Math.random() * args.length)];
+
 console.log('args', args);
 console.log('secret', secret);
+console.log('computerMove', computerMove);
 
