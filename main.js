@@ -23,7 +23,7 @@ console.log('userLoseMoves', userLoseMoves);
 console.log('half', half);
 console.log('computerMoveIndex', computerMoveIndex);
 
-const hmac = createHmac('sha512', secret).digest('hex');
+const hmac = createHmac('sha512', secret).update(computerMove).digest('hex');
 
 console.log('args', args);
 console.log('secret', secret);
@@ -50,4 +50,4 @@ console.log(`Your move: ${userMove}`);
 console.log(`Computer move: ${computerMove}`);
 console.log(`You ${userLoseMoves.includes(userMove) ? 'lose' : 'win'}.`);
 // TODO: process draw case!
-console.log(`HMAC key: ${secret}`);
+console.log(`HMAC secret: ${secret}`);
