@@ -45,4 +45,9 @@ function askForMove() {
 }
 
 const userMove = askForMove();
-console.log('userMove', userMove);
+
+console.log(`Your move: ${userMove}`);
+console.log(`Computer move: ${computerMove}`);
+console.log(`You ${userLoseMoves.includes(userMove) ? 'lose' : 'win'}.`);
+// TODO: process draw case!
+console.log(`HMAC key: ${secret}`);
