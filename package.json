@@ -1,0 +1,12 @@
+{
+  "name": "NTGOM",
+  "version": "1.0.0",
+  "description": "Nontransitive game of general form with one move.",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "keywords": ["nontransitive", "game"],
+  "author": "Stanislav Stolbov",
+  "license": "MIT"
+}
