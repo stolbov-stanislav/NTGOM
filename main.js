@@ -1,4 +1,4 @@
-const { randomBytes } = require('crypto');
+const { randomBytes, createHmac } = require('crypto');
 
 const args = process.argv.slice(2);
 
@@ -12,7 +12,9 @@ const secret = randomBytes(256).toString('hex');
 
 const computerMove = args[Math.floor(Math.random() * args.length)];
 
+const hmac = createHmac('sha512', secret).digest('hex');
+
 console.log('args', args);
 console.log('secret', secret);
 console.log('computerMove', computerMove);
-
+console.log('hmac', hmac);
