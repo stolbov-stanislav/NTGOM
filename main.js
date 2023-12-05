@@ -32,3 +32,13 @@ console.log('args', args);
 console.log('secret', secret);
 console.log('computerMove', computerMove);
 console.log('hmac', hmac);
+
+function drawMenu(items) {
+  items.forEach((item, i) => {
+    console.log(`${i + 1} - ${item}`);
+  });
+  console.log('0 - exit');
+  console.log('? - help');
+}
+
+drawMenu(args);
