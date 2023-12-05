@@ -1,4 +1,5 @@
 const { randomBytes, createHmac } = require('crypto');
+const readlineSync = require('readline-sync');
 
 const args = process.argv.slice(2);
 
@@ -42,3 +43,10 @@ function drawMenu(items) {
 }
 
 drawMenu(args);
+
+function askForMove() {
+  return readlineSync.question('Enter your move: ');
+}
+
+const userMove = askForMove();
+console.log('userMove', userMove);

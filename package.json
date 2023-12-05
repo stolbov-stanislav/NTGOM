@@ -13,6 +13,7 @@
   "author": "Stanislav Stolbov",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^20.10.3"
+    "@types/node": "^20.10.3",
+    "readline-sync": "^1.4.10"
   }
 }
