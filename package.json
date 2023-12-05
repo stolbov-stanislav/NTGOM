@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Nontransitive game of general form with one move.",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "start": "node main.js"
   },

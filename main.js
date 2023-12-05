@@ -1,5 +1,6 @@
-const { randomBytes, createHmac } = require('crypto');
-const readlineSync = require('readline-sync');
+import { question } from 'readline-sync';
+
+import HashGenerator from './helpers/HashGenerator.js';
 
 const args = process.argv.slice(2);
 
@@ -9,9 +10,9 @@ if (argsError) {
   console.log('You must pass 3 or more odd non-repeating arguments!');
 }
 
-const secret = randomBytes(256).toString('hex');
-
 const computerMove = args[Math.floor(Math.random() * args.length)];
+
+const hashGenerator = new HashGenerator(computerMove);
 
 const userLoseMoves = [];
 const half = (args.length - 1) / 2;
@@ -23,12 +24,10 @@ console.log('userLoseMoves', userLoseMoves);
 console.log('half', half);
 console.log('computerMoveIndex', computerMoveIndex);
 
-const hmac = createHmac('sha512', secret).update(computerMove).digest('hex');
-
 console.log('args', args);
-console.log('secret', secret);
+console.log('secret', hashGenerator.secret);
 console.log('computerMove', computerMove);
-console.log('hmac', hmac);
+console.log('hmac', hashGenerator.hmac);
 
 function drawMenu(items) {
   items.forEach((item, i) => {
@@ -41,7 +40,7 @@ function drawMenu(items) {
 drawMenu(args);
 
 function askForMove() {
-  return readlineSync.question('Enter your move: ');
+  return question('Enter your move: ');
 }
 
 const userMove = askForMove();
@@ -50,4 +49,4 @@ console.log(`Your move: ${userMove}`);
 console.log(`Computer move: ${computerMove}`);
 console.log(`You ${userLoseMoves.includes(userMove) ? 'lose' : 'win'}.`);
 // TODO: process draw case!
-console.log(`HMAC secret: ${secret}`);
+console.log(`HMAC secret: ${hashGenerator.secret}`);
