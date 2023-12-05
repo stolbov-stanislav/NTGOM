@@ -1,6 +1,7 @@
 import { question } from 'readline-sync';
 
 import HashGenerator from './helpers/HashGenerator.js';
+import AI from './helpers/AI.js';
 
 const args = process.argv.slice(2);
 
@@ -10,23 +11,23 @@ if (argsError) {
   console.log('You must pass 3 or more odd non-repeating arguments!');
 }
 
-const computerMove = args[Math.floor(Math.random() * args.length)];
+const ai = new AI();
+ai.makeMove(args);
 
-const hashGenerator = new HashGenerator(computerMove);
+const hashGenerator = new HashGenerator(ai.move);
 
 const userLoseMoves = [];
 const half = (args.length - 1) / 2;
-const computerMoveIndex = args.indexOf(computerMove);
 for (let shift = 1; shift <= half; shift++) {
-  userLoseMoves.push(args.at(computerMoveIndex - shift));
+  userLoseMoves.push(args.at(ai.moveIndex - shift));
 }
 console.log('userLoseMoves', userLoseMoves);
 console.log('half', half);
-console.log('computerMoveIndex', computerMoveIndex);
+console.log('computerMoveIndex', ai.moveIndex);
 
 console.log('args', args);
 console.log('secret', hashGenerator.secret);
-console.log('computerMove', computerMove);
+console.log('computerMove', ai.move);
 console.log('hmac', hashGenerator.hmac);
 
 function drawMenu(items) {
@@ -46,7 +47,7 @@ function askForMove() {
 const userMove = askForMove();
 
 console.log(`Your move: ${userMove}`);
-console.log(`Computer move: ${computerMove}`);
+console.log(`Computer move: ${ai.move}`);
 console.log(`You ${userLoseMoves.includes(userMove) ? 'lose' : 'win'}.`);
 // TODO: process draw case!
 console.log(`HMAC secret: ${hashGenerator.secret}`);
