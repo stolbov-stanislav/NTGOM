@@ -29,16 +29,21 @@ export default class Game {
     let userMove = '';
 
     while(true) {
-      this.drawMenu(rules.options);
+      this.drawMenu(rules.options, rules.optionsChars);
 
       userMove = this.askForMove();
   
-      if (userMove === '0') {
+      if (userMove === rules.exitChar) {
         return;
       }
   
-      if (userMove === '?') {
+      if (userMove === rules.helpChar) {
         // TODO: draw help
+        continue;
+      }
+
+      if (!rules.isUserInputCorrect(userMove)) {
+        this.drawHintForIncorrectInput(rules.optionsChars[0], rules.optionsChars.at(-1), rules.options[0], rules.exitChar, rules.helpChar);
         continue;
       }
 
@@ -54,10 +59,10 @@ export default class Game {
     this.drawResults(userMove, ai.move, decision, hashGenerator.secret);
   }
 
-  static drawMenu(items) {
+  static drawMenu(options, chars) {
     console.log('\x1b[32mAvailable moves:\x1b[0m');
-    items.forEach((item, i) => {
-      console.log(`\x1b[31m${i + 1}\x1b[0m - \x1b[33m${item}\x1b[0m`);
+    chars.forEach((char, i) => {
+      console.log(`\x1b[31m${char}\x1b[0m - \x1b[33m${options[i]}\x1b[0m`);
     });
     console.log('\x1b[32m0\x1b[0m - \x1b[32mexit\x1b[0m');
     console.log('\x1b[32m?\x1b[0m - \x1b[32mhelp\x1b[0m');
@@ -72,5 +77,11 @@ export default class Game {
     console.log(`\x1b[33mComputer move:\x1b[0m ${aiMove}`);
     console.log(`\x1b[31m${decision}\x1b[0m`);
     console.log(`\x1b[32mHMAC secret:\x1b[0m ${secret}`);
+  }
+
+  static drawHintForIncorrectInput(start, end, startOption, exit, help) {
+    console.log('\x1b[34mYou entered an incorrect value.\x1b[0m');
+    console.log(`\x1b[34mPlease enter a character from ${start} to ${end} corresponding to your choice: for example, "${start}" - "${startOption}" for playing.\x1b[0m`);
+    console.log(`\x1b[34mEnter ${exit} or ${help} for exit or help respectively.\x1b[0m`);
   }
 }

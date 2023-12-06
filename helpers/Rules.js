@@ -3,10 +3,25 @@ export default class Rules {
     this._options = moves;
     this._loseMoves = [];
     this._drawMove = '';
+    this._exitChar = '0';
+    this._helpChar = '?';
+    this._optionsChars = Array.isArray(moves) && moves.map((_, i) => `${i + 1}`);
   }
 
   get options() {
     return this._options;
+  }
+
+  get exitChar() {
+    return this._exitChar;
+  }
+
+  get helpChar() {
+    return this._helpChar;
+  }
+
+  get optionsChars() {
+    return this._optionsChars;
   }
 
   set drawMove(option) {
@@ -21,6 +36,10 @@ export default class Rules {
       (this._options.length % 2 === 0) || 
       (this._options.length !== new Set(this._options).size)
     );
+  }
+
+  isUserInputCorrect(move) {
+    return this._optionsChars.includes(move);
   }
 
   collectLoseMoves(anchorIndex) {
