@@ -24,31 +24,38 @@ export default class Game {
 
     rules.collectLoseMoves(ai.moveIndex);
 
-    function drawMenu(items) {
-      items.forEach((item, i) => {
-        console.log(`${i + 1} - ${item}`);
-      });
-      console.log('0 - exit');
-      console.log('? - help');
-    }
+    console.log(`\x1b[31mHMAC:\x1b[0m ${hashGenerator.hmac}`);
 
-    drawMenu(rules.options);
+    this.drawMenu(rules.options);
 
-    function askForMove() {
-      return question('Enter your move: ');
-    }
+    const userMove = this.askForMove();
 
-    const userMove = askForMove();
-
-    console.log(`Your move: ${userMove}`);
-    console.log(`Computer move: ${ai.move}`);
     const decision = rules.isWin(userMove)
-      ? 'You win!'
-      : rules.isDraw(userMove)
-        ? 'Draw!'
-        : 'You lose.';
-    console.log(decision);
-    // TODO: process draw case!
-    console.log(`HMAC secret: ${hashGenerator.secret}`);
+    ? 'You win!'
+    : rules.isDraw(userMove)
+      ? 'Draw!'
+      : 'You lose.';
+    
+    this.drawResults(userMove, ai.move, decision, hashGenerator.secret);
+  }
+
+  static drawMenu(items) {
+    console.log('\x1b[32mAvailable moves:\x1b[0m');
+    items.forEach((item, i) => {
+      console.log(`\x1b[31m${i + 1}\x1b[0m - \x1b[33m${item}\x1b[0m`);
+    });
+    console.log('\x1b[32m0\x1b[0m - \x1b[32mexit\x1b[0m');
+    console.log('\x1b[32m?\x1b[0m - \x1b[32mhelp\x1b[0m');
+  }
+
+  static askForMove() {
+    return question('\x1b[31mEnter your move:\x1b[0m ');
+  }
+
+  static drawResults(userMove, aiMove, decision, secret) {
+    console.log(`\x1b[33mYour move:\x1b[0m ${userMove}`);
+    console.log(`\x1b[33mComputer move:\x1b[0m ${aiMove}`);
+    console.log(`\x1b[31m${decision}\x1b[0m`);
+    console.log(`\x1b[32mHMAC secret:\x1b[0m ${secret}`);
   }
 }
