@@ -56,4 +56,12 @@ export default class Rules {
   isWin(move) {
     return !this.isDraw(move) && !this._loseMoves.includes(move);
   }
+
+  calculateDecision(option) {
+    return this.isWin(option)
+      ? 'You win!'
+      : this.isDraw(option)
+        ? 'Draw!'
+        : 'You lose.';
+  }
 }

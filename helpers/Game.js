@@ -52,11 +52,7 @@ export default class Game {
 
     const userOption = rules.options[userMove - 1];
 
-    const decision = rules.isWin(userOption)
-    ? 'You win!'
-    : rules.isDraw(userOption)
-      ? 'Draw!'
-      : 'You lose.';
+    const decision = rules.calculateDecision(userOption);
     
     this.drawResults(userOption, ai.move, decision, hashGenerator.secret);
   }
