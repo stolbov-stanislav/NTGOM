@@ -26,9 +26,24 @@ export default class Game {
 
     console.log(`\x1b[31mHMAC:\x1b[0m ${hashGenerator.hmac}`);
 
-    this.drawMenu(rules.options);
+    let userMove = '';
 
-    const userMove = this.askForMove();
+    while(true) {
+      this.drawMenu(rules.options);
+
+      userMove = this.askForMove();
+  
+      if (userMove === '0') {
+        return;
+      }
+  
+      if (userMove === '?') {
+        // TODO: draw help
+        continue;
+      }
+
+      break;
+    }
 
     const decision = rules.isWin(userMove)
     ? 'You win!'
