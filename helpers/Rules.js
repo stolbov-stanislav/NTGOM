@@ -1,11 +1,27 @@
 export default class Rules {
-  constructor(moves) {
-    this._options = moves;
-    this._loseMoves = [];
-    this._drawMove = '';
+  constructor(options) {
+    this._options = options;
+    this._loseOptions = [];
+    this._drawOption = '';
     this._exitChar = '0';
     this._helpChar = '?';
-    this._optionsChars = Array.isArray(moves) && moves.map((_, i) => `${i + 1}`);
+    this._optionsChars = Array.isArray(options) && options.map((_, i) => `${i + 1}`);
+  }
+
+  static getDecision(options, firstOption, secondOption) {
+    if (firstOption === secondOption) {
+      return 'draw';
+    }
+
+    const half = (options.length - 1) / 2;
+    const loseOptions = [];
+    for (let shift = 1; shift <= half; shift++) {
+      loseOptions.push(options.at(options.indexOf(firstOption) - shift));
+    }
+
+    return loseOptions.includes(secondOption)
+      ? 'lose'
+      : 'win';
   }
 
   get options() {
@@ -24,9 +40,9 @@ export default class Rules {
     return this._optionsChars;
   }
 
-  set drawMove(option) {
+  set drawOption(option) {
     if ((typeof option === 'string') && (this._options.includes(option))) {
-      this._drawMove = option;
+      this._drawOption = option;
     }
   }
 
@@ -42,19 +58,19 @@ export default class Rules {
     return this._optionsChars.includes(move);
   }
 
-  collectLoseMoves(anchorIndex) {
+  collectLoseOptions(anchorIndex) {
     const half = (this._options.length - 1) / 2;
     for (let shift = 1; shift <= half; shift++) {
-      this._loseMoves.push(this._options.at(anchorIndex - shift));
+      this._loseOptions.push(this._options.at(anchorIndex - shift));
     }
   }
 
-  isDraw(move) {
-    return this._drawMove === move;
+  isDraw(option) {
+    return this._drawOption === option;
   }
 
-  isWin(move) {
-    return !this.isDraw(move) && !this._loseMoves.includes(move);
+  isWin(option) {
+    return !this.isDraw(option) && !this._loseOptions.includes(option);
   }
 
   calculateDecision(option) {

@@ -1,4 +1,6 @@
 import { question } from 'readline-sync';
+import AsciiTable from 'ascii-table';
+import chalk from 'chalk';
 
 import Rules from './Rules.js';
 import AI from './AI.js';
@@ -10,21 +12,21 @@ export default class Game {
     const rules = new Rules(process.argv.slice(2));
 
     if (!rules.isOptionsCorrected()) {
-      console.log('\x1b[31mYou must pass 3 or more odd non-repeating arguments!\x1b[0m');
-      console.log('\x1b[32mHint:\x1b[0m \x1b[33mnode main spok rock scissors paper bird\x1b[0m');
+      console.log(chalk.red('You must pass 3 or more odd non-repeating arguments!'));
+      console.log(`${chalk.green('Hint: ')}${chalk.yellow('node main water rock scissors paper bird')}`);
       return;
     }
 
     const ai = new AI();
     ai.makeMove(rules.options);
 
-    rules.drawMove = ai.move;
+    rules.drawOption = ai.move;
 
     const hashGenerator = new HashGenerator(ai.move);
 
-    rules.collectLoseMoves(ai.moveIndex);
+    rules.collectLoseOptions(ai.moveIndex);
 
-    console.log(`\x1b[31mHMAC:\x1b[0m ${hashGenerator.hmac}`);
+    console.log(`${chalk.red('HMAC:')} ${hashGenerator.hmac}`);
 
     let userMove = '';
 
@@ -38,7 +40,7 @@ export default class Game {
       }
   
       if (userMove === rules.helpChar) {
-        // TODO: draw help
+        this.drawHelp(rules.options);
         continue;
       }
 
@@ -58,28 +60,53 @@ export default class Game {
   }
 
   static drawMenu(options, chars) {
-    console.log('\x1b[32mAvailable moves:\x1b[0m');
+    console.log(chalk.green('Available moves:'));
     chars.forEach((char, i) => {
-      console.log(`\x1b[31m${char}\x1b[0m - \x1b[33m${options[i]}\x1b[0m`);
+      console.log(`${chalk.red(char)} - ${chalk.yellow(options[i])}`);
     });
-    console.log('\x1b[32m0\x1b[0m - \x1b[32mexit\x1b[0m');
-    console.log('\x1b[32m?\x1b[0m - \x1b[32mhelp\x1b[0m');
+    console.log(`${chalk.green('0')} - ${chalk.green('exit')}`);
+    console.log(`${chalk.green('?')} - ${chalk.green('help')}`);
+  }
+
+  static drawHelp(options) {
+    const limitedTableSize = 7;
+    const limitedOptions = options.length <= limitedTableSize ? options.slice() : options.slice(0, limitedTableSize);
+    
+    console.log(chalk.blue('\nRules of the game:'));
+    console.log(chalk.red('Half of the next ones in the circle win.'));
+    console.log(chalk.red('Half of the previous ones in the circle lose.'));
+    console.log(chalk.green('(the semantics of the lines is not important)'));
+    console.log(chalk.yellow(`For example, if you choose "${limitedOptions[1]}" and the computer chooses "${limitedOptions[0]}", you win.`));
+    console.log(chalk.blue('\nBelow is a table of solutions:'));
+
+    const helpTable = new AsciiTable('NTGOM Help');
+
+    helpTable.setBorder('|', '-', '+', '+');
+
+    helpTable.setHeading('↓ PC / User →', ...limitedOptions);
+
+    limitedOptions.forEach((firstOption) => {
+      const decisions = limitedOptions.map((secondOption) => Rules.getDecision(limitedOptions, firstOption, secondOption));
+      helpTable.addRow(firstOption, ...decisions);
+    });
+    
+    console.log(helpTable.toString() + '\n');
   }
 
   static askForMove() {
-    return question('\x1b[31mEnter your move:\x1b[0m ');
+    return question(chalk.red('Enter your move: '));
   }
 
   static drawResults(userMove, aiMove, decision, secret) {
-    console.log(`\x1b[33mYour move:\x1b[0m ${userMove}`);
-    console.log(`\x1b[33mComputer move:\x1b[0m ${aiMove}`);
-    console.log(`\x1b[31m${decision}\x1b[0m`);
-    console.log(`\x1b[32mHMAC secret:\x1b[0m ${secret}`);
+    console.log(`${chalk.yellow('Your move:')} ${userMove}`);
+    console.log(`${chalk.yellow('Computer move:')} ${aiMove}`);
+    console.log(`${chalk.red(decision)}`);
+    console.log(`${chalk.green('HMAC secret:')} ${secret}`);
   }
 
   static drawHintForIncorrectInput(start, end, startOption, exit, help) {
-    console.log('\x1b[34mYou entered an incorrect value.\x1b[0m');
-    console.log(`\x1b[34mPlease enter a character from ${start} to ${end} corresponding to your choice: for example, "${start}" - "${startOption}" for playing.\x1b[0m`);
-    console.log(`\x1b[34mEnter ${exit} or ${help} for exit or help respectively.\x1b[0m`);
+    console.log(chalk.blue('You entered an incorrect value.'));
+    console.log(chalk.blue(`Please enter a character from ${start} to ${end} corresponding to your choice: for example, "${start}" - "${startOption}" for playing.`));
+    console.log(chalk.blue(`Enter ${exit} or ${help} for exit or help respectively.`));
   }
 }
