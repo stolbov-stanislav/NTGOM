@@ -13,7 +13,7 @@ export default class Game {
 
     if (!rules.isOptionsCorrected()) {
       console.log(chalk.red('You must pass 3 or more odd non-repeating arguments!'));
-      console.log(`${chalk.green('Hint: ')}${chalk.yellow('node main water rock scissors paper bird')}`);
+      console.log(`${chalk.green('Hint: ')}${chalk.yellow('npm start water rock scissors paper bird')}`);
       return;
     }
 
