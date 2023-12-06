@@ -50,13 +50,15 @@ export default class Game {
       break;
     }
 
-    const decision = rules.isWin(userMove)
+    const userOption = rules.options[userMove - 1];
+
+    const decision = rules.isWin(userOption)
     ? 'You win!'
-    : rules.isDraw(userMove)
+    : rules.isDraw(userOption)
       ? 'Draw!'
       : 'You lose.';
     
-    this.drawResults(userMove, ai.move, decision, hashGenerator.secret);
+    this.drawResults(userOption, ai.move, decision, hashGenerator.secret);
   }
 
   static drawMenu(options, chars) {
